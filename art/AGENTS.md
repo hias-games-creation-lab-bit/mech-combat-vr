@@ -11,12 +11,12 @@ Read `/docs/ART_ASSET_REGISTRY.md`
 2. Use target triangle counts as budgets, not absolute hardware limits.
 3. Generate LODs automatically for every 3D asset.
 4. Record source, prompt, license, and generation date for every asset.
-5. Use ChatGPT image generation for concepts + Blender 5.0 bpy for 3D modeling. NO external 3D generation services (Meshy/Tripo - quality insufficient).
+5. Choose the highest quality tool for each task. Options include: ChatGPT image generation, Meshy, Tripo, Blender 5.0 bpy, Unity Asset Store, and others. Do not lock to a single tool - always pick what produces the best result for Quest 3.
 6. Create preview renders for human review.
 7. Never approve CRITICAL hero assets (PLAYER_MECH, BOSS_MECH, COCKPIT) without Director.
 8. Never use copyrighted reference material without authorization.
 9. Update ART_ASSET_REGISTRY.md after every asset operation.
-10. All art creation within ChatGPT Pro subscription. No additional paid services.
+10. Prioritize quality over cost. Paid tools (Meshy Pro, etc.) are approved if they produce clearly better results. Report costs before large batches.
 
 ## Asset Selection Process
 1. Generate candidates (10-50)
