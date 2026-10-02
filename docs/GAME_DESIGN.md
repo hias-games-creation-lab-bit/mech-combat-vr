@@ -4,6 +4,12 @@
 "Bonds of the Battlefield"-inspired VR cockpit combat game
 Quest 3 exclusive, single-player, seated
 
+## Game Overview
+18mの巨大メカのコックピットに座り、左手でレバー操作、右手で武器を構えて敵メカと戦うVR戦闘ゲーム。
+3種類の武器（ライフル/キャノン/ミサイル）を使い分け、3種類の敵（射撃型/近接型/スナイパー型）とボスを倒して5分間のステージをクリアする。
+コックピットの没入感、敵との駆け引き、射撃の爽快感がすべて等しく重要。
+グラフィックやストーリーより「操縦している感覚」と「撃って気持ちいい」を最優先する。
+
 ## Core Experience
 Piloting a giant mech from inside its cockpit.
 The game is about FEEL, not features.
