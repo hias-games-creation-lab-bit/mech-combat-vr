@@ -14,7 +14,7 @@
 M0
 
 ## Phase State
-BLOCKED
+RUNNING
 
 ## Current Task
 M0-001 Unity project creation
@@ -23,7 +23,7 @@ M0-001 Unity project creation
 YES
 
 ## Technical Gate
-BLOCKED
+RUNNING
 
 ## Human Gate
 NOT_READY
@@ -51,7 +51,7 @@ NOT_READY
 ## Tasks (AUTO only)
 
 ### M0 - Technical Foundation
-- [ ] M0-001 Create Unity 6.3 LTS (6000.3.25f1) project (Universal 3D / URP); verify ProjectVersion.txt matches ADR-001
+- [x] M0-001 Create Unity 6.3 LTS (6000.3.25f1) project (Universal 3D / URP); verify ProjectVersion.txt matches ADR-001
 - [ ] M0-002 Configure Android build settings (IL2CPP, ARM64, Vulkan, minSdk 32, targetSdk 34)
 - [ ] M0-003 Install OpenXR Plugin (compatible latest stable)
 - [ ] M0-004 Install Meta XR SDK All-in-One v207+
@@ -148,15 +148,16 @@ These entries never block completion of the AUTO task list; they block Phase com
 | HG-M4-DEVICE | Director wearing Quest 3 | Full playtest, comfort, sustained performance/thermal review | NOT_READY |
 
 ## Current Validation Record
-- Profile: FOUNDATION selected for M0-001 before repository implementation; diagnostic/state-only record for this stopped preflight.
-- Required checks: exact Editor/license, project artifact/URP inspection and compile, relevant available foundation checks; M0 Phase TEST-M0-001 through TEST-M0-005 remain required. No repository implementation or project validation was performed.
+- Profile: FOUNDATION for M0-001 (PASS, subject to final staged review and commit), resumed by explicit parent instruction after correction of task applicability. Required: exact Editor and ProjectVersion, URP Forward on every active renderer/quality, successful import/compile, error-free project startup and a foundation PlayMode smoke check. Configuration assertions use Editor validation; separate gameplay unit tests are N/A because no gameplay logic exists. XR/device/performance checks are N/A for this project-creation task only; they remain mandatory for the applicable later tasks and Phase handoff.
+- Results: exact Editor/ProjectVersion PASS; compile PASS; all six quality configurations use URP Forward; PlayMode foundation smoke 1 passed / 0 failed / 0 skipped, no unexpected runtime logs. Phase tests beyond TEST-M0-001 remain pending.
 - Task-level N/A declared before implementation: gameplay unit/PlayMode, XR input and gameplay performance checks for M0-001 only, because no gameplay/XR feature exists yet. Editor/compile and all required Phase device checks are not waived. Missing Quest connectivity is BLOCKED, not N/A.
-- Tested source revision / working-tree fingerprint: 8cbface11a58a504993cca579764fac279a927a7, initially clean index and working tree; docs-only changes after preflight.
+- Tested source: M0-001 implementation based on 47206b9095a851babfa634cb5fa6b2aa04aa98fd; source fingerprint and package versions recorded in task evidence.
 - Candidate APK checksum / external artifact location: none; no candidate built.
-- Evidence report: [M0 environment preflight](validation/m0/2026-10-02-environment-preflight.md)
+- Evidence reports: [M0-001](validation/m0/2026-10-02-m0-001.md), [historical preflight](validation/m0/2026-10-02-environment-preflight.md).
 - Human approval reference: none
 
 ## Retry / Failure History
+- Applicability correction (parent explicitly authorized resume): commit 47206b9 incorrectly applied the Phase-level Quest requirement to M0-001. FOUNDATION and TEST-M0-001 do not require a connected Quest. Preserve the observation/count below as history; ENV-QUEST-NO-DEVICE is an unresolved dependency for M0-010 onward, not a present M0-001 failure. No counter was reset and no device retest occurred. M0-001 through M0-009 may proceed subject to each task's actual requirements; this does not authorize Phase PASS.
 - M0-001 / ENV-QUEST-NO-DEVICE: failure_count=1, open, observed 2026-10-02T11:15Z. Authorized ADB daemon started successfully, but `adb devices -l` returned no devices. No repair/retest of this root cause attempted. Next: connect an available Quest 3 with approved development/USB debugging access, then explicitly resume. Evidence: validation/m0/2026-10-02-environment-preflight.md.
 - PREFLIGHT / ENV-SANDBOX-HOST-ACCESS: failure_count=1, resolved for checked operations. Initial Git Schannel credential and ADB daemon operations failed in the sandbox; permission-reviewed host executions succeeded. This did not validate Quest connectivity or any M0 task. Counts retained.
 
@@ -164,7 +165,7 @@ For each open cause, record: task ID, stable root-cause ID, failure_count, attem
 Counts persist across sessions. A diagnostic commit does not check off a task or clear a blocker.
 
 ## Completed Tasks
-(none yet)
+- M0-001: FOUNDATION PASS; see docs/validation/m0/2026-10-02-m0-001.md. Result becomes durable with the implementation/evidence/status commit.
 
 ## Performance Targets
 - Acceptance: sustained 90Hz; application CPU and GPU frame times each < 11.1ms (aim for 9ms)
@@ -204,13 +205,13 @@ Counts persist across sessions. A diagnostic commit does not check off a task or
 
 ## Automated Test Results
 - Environment only: exact installed Editor 6000.3.25f1_e1dba0a9aba4; license entitlement resolved; isolated-from-repository batch startup log reports successful exit (0).
-- M0-001: BLOCKED before repository project creation. Compile, runtime Console, unit/PlayMode and TEST-M0-001: NOT RUN for the repository.
+- M0-001: compile/configuration validation PASS, PlayMode 1/1 PASS; separate gameplay unit tests N/A (no gameplay logic). TEST-M0-001 PASS. Prior preflight-only block was a corrected applicability error.
 - M0-002 through M0-013: TODO / NOT RUN. TEST-M0-002 through TEST-M0-005 and Quest performance: NOT RUN; required device unavailable.
 
 ## Human Feedback
 (none yet - see docs/HUMAN_FEEDBACK.md)
 
 ## Blockers
-- ENV-QUEST-NO-DEVICE: no ADB device returned by the successful host-level query. Per explicit run instructions and AUTONOMOUS_DEVELOPMENT.md, stop on required environment absence rather than advance to another task.
-- Meta VR CLI was not discoverable on PATH; no callable Unity/XR Operator integration was exposed. XR Simulator/Meta SDK are not installed in this docs-only repository; installation and compatibility remain unattempted M0 work, not PASS.
-- Resume requires Quest connectivity and the parent's explicit instruction to handle the recorded BLOCKED state. Human Gates remain NOT_READY; M1 is not authorized.
+- Deferred device dependency ENV-QUEST-NO-DEVICE: no ADB device returned by the successful host-level query. Blocks M0-010 onward and Phase handoff, not M0-001 through M0-009 solely on that basis. Prior stop interpretation is corrected above, with history retained.
+- Meta VR CLI was not discoverable on PATH; no callable Unity/XR Operator integration was exposed. XR Simulator/Meta SDK are not installed in this foundation repository; installation and compatibility remain unattempted M0 work, not PASS.
+- Parent explicitly authorized M0-001 resume and eligible work through M0-009. M0-010 onward still requires Quest connectivity. Human Gates remain NOT_READY; M1 is not authorized.
