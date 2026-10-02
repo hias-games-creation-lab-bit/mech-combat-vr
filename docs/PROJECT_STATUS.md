@@ -1,17 +1,20 @@
 # PROJECT STATUS
 
 ## Platform
-- Unity 6.3 LTS
+- Unity 6.3 LTS (6000.3.25f1, exact Editor version; ADR-001)
 - Quest 3 only
 - Android ARM64
 - IL2CPP
 - Vulkan
 - OpenXR + Multi-View
-- URP (Forward)
+- URP (Forward only)
 - Meta XR SDK v207+
 
 ## Current Phase
 M0
+
+## Phase State
+NOT_STARTED
 
 ## Current Task
 M0-001 Unity project creation
@@ -19,41 +22,64 @@ M0-001 Unity project creation
 ## Autonomous
 YES
 
-## Human Gate
-NO
+## Technical Gate
+NOT_STARTED
 
-## Tasks
+## Human Gate
+NOT_READY
+
+## Director Gate
+NOT_READY
+
+## Device Gate
+NOT_READY
+
+## State Rules
+- Task states: TODO / IN_PROGRESS / PASS / FAIL / BLOCKED.
+- Phase states: NOT_STARTED / RUNNING / WAITING_HUMAN / BLOCKED / COMPLETE.
+- Technical Gate: NOT_STARTED / RUNNING / PASS / FAIL / BLOCKED.
+- Human Gates: NOT_READY / WAITING / PASS / FAIL. Human Gate is the aggregate of Director Gate and Device Gate.
+- The task lists below contain AUTO work only. Check an AUTO task only when AGENTS.md task PASS conditions are met and its implementation/evidence/status commit succeeds.
+- A working-tree PASS edit is provisional; only a successfully committed result is authoritative.
+- After all AUTO tasks and required technical tests pass, set Technical Gate = PASS, Human Gate = WAITING, Director Gate = WAITING, Device Gate = WAITING, and Phase State = WAITING_HUMAN. Save this state before stopping.
+- Human Gate = PASS only when both human decisions for the same candidate are explicitly approved. Any human rejection makes Human Gate = FAIL and Phase State = BLOCKED.
+- Only the Director supplies human approval. Dots may mirror an explicit decision with a HUMAN_FEEDBACK.md reference; Codex cannot approve it.
+- Phase COMPLETE requires Technical Gate PASS and both human approvals. Enter the next Phase only with the Director's explicit transition authorization.
+- A changed candidate implementation or relevant specification invalidates prior gate approvals and requires revalidation. Diagnostic/approval records alone do not change the tested build.
+- Autonomous = YES is permission to run approved AUTO work, not permission to bypass WAITING_HUMAN or BLOCKED.
+
+## Tasks (AUTO only)
 
 ### M0 - Technical Foundation
-- [ ] M0-001 Create Unity 6 project (Universal 3D / URP)
+- [ ] M0-001 Create Unity 6.3 LTS (6000.3.25f1) project (Universal 3D / URP); verify ProjectVersion.txt matches ADR-001
 - [ ] M0-002 Configure Android build settings (IL2CPP, ARM64, Vulkan, minSdk 32, targetSdk 34)
 - [ ] M0-003 Install OpenXR Plugin (compatible latest stable)
 - [ ] M0-004 Install Meta XR SDK All-in-One v207+
-- [ ] M0-005 Run Meta XR SDK Project Setup Tool - apply all fixes
+- [ ] M0-005 Run Meta XR SDK Project Setup Tool; review findings and apply only explicitly approved fixes (no Editor upgrade)
 - [ ] M0-006 Configure URP Asset (Forward, MSAA 4x, HDR Off, Post Processing Off)
 - [ ] M0-007 Set 90Hz target in OVRManager
 - [ ] M0-008 Install Meta VR CLI + XR Operator via Meta XR SDK AI Tools
 - [ ] M0-009 Build APK for Quest 3
 - [ ] M0-010 Deploy to Quest 3 and verify launch
-- [ ] M0-011 Verify head tracking works
-- [ ] M0-012 Verify both controllers detected
-- [ ] M0-013 Git initial commit
+- [ ] M0-011 Verify head tracking via automated pose/log checks (human confirmation belongs to HG-M0-DEVICE)
+- [ ] M0-012 Verify both controllers detected via automated input/log checks (human confirmation belongs to HG-M0-DEVICE)
+- [ ] M0-013 Prepare Phase technical handoff report; save evidence/status, review final diff, then commit (not a Human Gate)
 
 ### M1 - VR Cockpit
 - [ ] M1-001 Create cockpit geometry (box prototype, 4 walls + ceiling)
 - [ ] M1-002 Set cockpit scale (seat at ~15m height, interior 1:1 human)
-- [ ] M1-003 Lock cockpit to head tracking (100% locked, world moves)
+- [ ] M1-003 Fix cockpit/seat to vehicle; preserve independent 1:1 head tracking and lean parallax (ADR-008)
 - [ ] M1-004 Left hand input -> mech movement (forward/back/turn)
 - [ ] M1-005 Implement yaw turn rate limit (25 deg/sec default, inspector tunable)
-- [ ] M1-006 Implement pitch lock (no pitch from movement)
+- [ ] M1-006 Lock artificial movement pitch/roll; do not constrain tracked head pose
 - [ ] M1-007 Implement acceleration limit (< 5 m/s^2, inspector tunable)
 - [ ] M1-008 Right hand weapon mount (controller forward = barrel)
 - [ ] M1-009 Trigger -> fire pooled projectile (80 m/s)
 - [ ] M1-010 Add ground plane (200m x 200m) + scale cue boxes (3-5)
 - [ ] M1-011 Basic vignette on boost (inspector tunable)
-- [ ] M1-012 5-minute comfort test on XR Simulator
-- [ ] M1-013 Quest 3 build + deploy
-- [ ] M1-014 Git commit
+- [ ] M1-012 5-minute automated XR Simulator stability/tracking test (TEST-M1-005 technical part; no comfort verdict)
+- [ ] M1-013 Quest 3 build + deploy + technical performance checks (human comfort belongs to HG-M1-DEVICE)
+- [ ] M1-014 Prepare Phase technical handoff report; save evidence/status, review final diff, then commit (not a Human Gate)
 
 ### M2 - Combat Core
 - [ ] M2-001 IDamageable interface + DamageInfo
@@ -70,9 +96,9 @@ NO
 - [ ] M2-012 Basic haptic on player hit (both controllers, 80ms)
 - [ ] M2-013 Duplicate damage prevention (1 hit = 1 damage)
 - [ ] M2-014 GC allocation check (must be 0 B/frame during combat)
-- [ ] M2-015 5-minute combat session test
-- [ ] M2-016 Quest 3 build + deploy
-- [ ] M2-017 Git commit
+- [ ] M2-016 Quest 3 build + deploy (prerequisite for M2-015)
+- [ ] M2-015 5-minute Quest 3 technical combat/performance session (TEST-M2-010 technical part; human feel belongs to HG-M2-DIRECTOR)
+- [ ] M2-017 Prepare Phase technical handoff report; save evidence/status, review final diff, then commit (not a Human Gate)
 
 ### M3 - Feel
 - [ ] M3-001 Weapon-specific haptic patterns (Rifle/Cannon/Missile distinct)
@@ -81,10 +107,10 @@ NO
 - [ ] M3-004 Muzzle flash (point light 0.05 sec on cockpit)
 - [ ] M3-005 Enemy stagger on cannon hit
 - [ ] M3-006 Placeholder SFX (Freesound.org CC0): fire, impact, enemy react, cockpit ambient
-- [ ] M3-007 Cockpit bob on mech walk (2-4cm, 1-2 deg roll, inspector tunable)
+- [ ] M3-007 Optional secondary-part visual walk bob (2-4cm, 1-2 deg roll; default off, Inspector-tunable; never move cockpit reference shell or XR camera)
 - [ ] M3-008 Speed lines / dust particles on boost
-- [ ] M3-009 Quest 3 build + feel test
-- [ ] M3-010 Git commit
+- [ ] M3-009 Quest 3 build + deploy + automated smoke/performance checks (human feel belongs to HG-M3-DIRECTOR)
+- [ ] M3-010 Prepare Phase technical handoff report; save evidence/status, review final diff, then commit (not a Human Gate)
 
 ### M4 - Vertical Slice
 - [ ] M4-001 3 WeaponDefinition SOs (Rifle, Cannon, Missile)
@@ -98,16 +124,50 @@ NO
 - [ ] M4-009 Stage flow: 2 enemies -> 3 -> strong -> group -> boss -> clear
 - [ ] M4-010 Cockpit HUD: Layer 1 instruments + Layer 2 reticle (#00FFCC)
 - [ ] M4-011 Victory / defeat / result screen
-- [ ] M4-012 Full 5-minute stage playthrough test
-- [ ] M4-013 Performance check (draw calls, tri, GC, frame time)
-- [ ] M4-014 Quest 3 build + full playtest
-- [ ] M4-015 Git commit
+- [ ] M4-012 Automated full-stage flow test (technical outcome only; engagement is a Human Gate)
+- [ ] M4-014 Quest 3 build + deploy + technical full-stage/performance test (human playtest belongs to HG-M4-DIRECTOR/DEVICE)
+- [ ] M4-013 Review Quest performance capture from M4-014 (draw calls, tri, GC, frame time)
+- [ ] M4-015 Prepare Phase technical handoff report; save evidence/status, review final diff, then commit (not a Human Gate)
+
+## Human Gate Checklist (not AUTO tasks)
+
+All entries are initially NOT_READY. The current Phase's entries become WAITING only after Technical Gate PASS.
+These entries never block completion of the AUTO task list; they block Phase completion and transition.
+
+| Gate ID | Owner | Required check | Status |
+|---|---|---|---|
+| HG-M0-DIRECTOR | Director | Review foundation evidence and approve M0 completion | NOT_READY |
+| HG-M0-DEVICE | Director wearing Quest 3 | Launch, display, head tracking, both controllers | NOT_READY |
+| HG-M1-DIRECTOR | Director | Cockpit presence and control feel | NOT_READY |
+| HG-M1-DEVICE | Director wearing Quest 3 | TEST-M1-005 human comfort check, lean/turn tracking | NOT_READY |
+| HG-M2-DIRECTOR | Director | Is shooting fun? | NOT_READY |
+| HG-M2-DEVICE | Director wearing Quest 3 | TEST-M2-010 human comfort check with 90Hz evidence | NOT_READY |
+| HG-M3-DIRECTOR | Director | Weapon feel, haptics, sound, satisfaction | NOT_READY |
+| HG-M3-DEVICE | Director wearing Quest 3 | Sensory feedback, optional effects, comfort | NOT_READY |
+| HG-M4-DIRECTOR | Director | Full-stage engagement and completion approval | NOT_READY |
+| HG-M4-DEVICE | Director wearing Quest 3 | Full playtest, comfort, sustained performance/thermal review | NOT_READY |
+
+## Current Validation Record
+- Profile: NOT_SELECTED (choose before starting the current task)
+- Required checks and N/A reasons: not recorded
+- Tested source revision / working-tree fingerprint: not recorded
+- Candidate APK checksum / external artifact location: not recorded
+- Evidence report: not recorded
+- Human approval reference: none
+
+## Retry / Failure History
+(none)
+
+For each open cause, record: task ID, stable root-cause ID, failure_count, attempted fixes, evidence path, last update, and next action.
+Counts persist across sessions. A diagnostic commit does not check off a task or clear a blocker.
 
 ## Completed Tasks
 (none yet)
 
 ## Performance Targets
-- Target: 90Hz (11.1ms frame budget, aim for 9ms)
+- Acceptance: sustained 90Hz; application CPU and GPU frame times each < 11.1ms (aim for 9ms)
+- Emergency floor: application FPS < 72 or CPU/GPU frame time > 13.9ms -> STOP/BLOCKED, not an alternative target
+- Measurements and classification: TEST_PLAN.md Performance Acceptance
 - Draw calls: < 150/eye (warning >= 250, hard limit 300)
 - Visible triangles: < 300k ideal, ~325k target (hard limit 750k)
 - Texture memory: < 400MB (hard limit 512MB)

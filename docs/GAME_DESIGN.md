@@ -42,7 +42,7 @@ The game is about FEEL, not features.
 - Speed: 25 m/s (must lead target)
 - Damage: High
 - Heat: High
-- Haptic: amplitude 1.0, 120ms + cockpit shake
+- Haptic: amplitude 1.0, 120ms + visual-only secondary-part shake (see VR Comfort Limits; never shake the tracked camera)
 - Fire rate: 800ms interval
 
 ### Missile Pod
@@ -92,15 +92,26 @@ If a value affects gameplay balance and is not specified:
 4. Director tunes all feel values in VR headset
 
 ## VR Comfort Limits
-- Yaw turn rate: 25-45 deg/sec max (25 for heavy mech feel)
-- Pitch: LOCKED (no pitch from movement)
-- Forward acceleration: < 5 m/s^2
-- Max speed: 8-12 m/s (boost with vignette only)
-- Cockpit bob: 2-4cm up/down, 1-2 deg roll max
-- Shake: 10-20Hz, < 0.5cm, < 0.5 deg, bursts < 0.4 sec
-- Vignette on boost: darken 15% periphery, 0.3 sec fade
-- Head bob LIMIT: > 5cm or > 5 deg = instant sickness
-- Continuous shake > 2 sec = forbidden
+
+### Reference frame and tracking
+- The cockpit reference shell and seat anchor are fixed to the mech/vehicle, NOT the tracked head or camera (ADR-008).
+- The XR Origin is anchored to the seat. Preserve tracked head translation and rotation at 1:1 scale within the cockpit.
+- Leaning changes the head's position relative to the cockpit and produces parallax. Looking around does not rotate the cockpit with the head.
+- Artificial locomotion moves/turns the mech and its seat/cockpit together. The world appears to move relative to the seated player; do not implement this by attaching the cockpit to the camera.
+- Seated play does not mean frozen head position. Never clamp physical head pitch, roll, yaw, or lean to enforce locomotion limits.
+
+### Artificial locomotion and effects
+- Yaw turn rate: 25-45 deg/sec max (25 for heavy mech feel).
+- Pitch/roll from artificial vehicle movement: LOCKED. Tracked head pitch/roll remains active.
+- Forward acceleration: < 5 m/s^2.
+- Max speed: 8-12 m/s (boost with vignette only).
+- Walk bob: optional visual-only motion of designated secondary mech/cockpit parts, 2-4cm up/down and 1-2 deg roll max when enabled. It must not move the reference shell, canopy, seat anchor, XR Origin, or camera.
+- Shake: visual-only secondary-part effect, 10-20Hz, < 0.5cm, < 0.5 deg, bursts < 0.4 sec. The same exclusions apply to cannon recoil and damage feedback.
+- Artificial camera/head bob and camera shake: forbidden. Physical tracked head motion is not a bob/shake effect and is not limited by these effect amplitudes.
+- Vignette on boost: darken 15% periphery, 0.3 sec fade.
+- Continuous shake > 2 sec = forbidden.
+- Bob/shake effects default to off until Director tuning in headset. Keep effect amplitudes Inspector-tunable.
+- Numerical limits are design constraints, not a guarantee against sickness. Simulator tests cannot approve comfort; the Director must evaluate the candidate on Quest 3 and stop if uncomfortable.
 
 ## Cockpit UI Layout
 - Layer 1 (0.8m): Diegetic instruments (ammo, heat) - world-space canvas

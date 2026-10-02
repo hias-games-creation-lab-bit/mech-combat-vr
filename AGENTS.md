@@ -27,12 +27,13 @@ Each type of information has exactly ONE authoritative file. Do not contradict i
 | Visual style, colors, silhouette | DESIGN_BIBLE.md | reference only |
 | Asset status, tri counts, materials | ART_ASSET_REGISTRY.md | reference only |
 | Current task, phase, blockers | PROJECT_STATUS.md | - |
-| Test definitions, pass criteria | TEST_PLAN.md | - |
+| Test definitions, measurement methods, test-specific pass criteria | TEST_PLAN.md | - |
+| Task PASS and commit eligibility | AGENTS.md | reference only |
 | Known bugs | KNOWN_ISSUES.md | - |
 | Code quality rules | DEVELOPMENT_RULES.md | - |
 | Autonomous workflow | AUTONOMOUS_DEVELOPMENT.md | - |
 | Director feedback | HUMAN_FEEDBACK.md | - |
-| Architecture decisions | DECISIONS.md | - |
+| Architecture decisions, approved Unity version and rendering path | DECISIONS.md | reference only |
 | Asset licenses | ASSET_LICENSE_REGISTRY.md | - |
 
 If two files disagree, the Source of Truth file wins.
@@ -40,8 +41,8 @@ If two files disagree, the Source of Truth file wins.
 ## Target Platform
 
 - Meta Quest 3 (standalone, NOT PCVR)
-- Unity 6.3 LTS (6000.0.x)
-- URP (Forward/Forward+)
+- Unity 6.3 LTS (6000.3.25f1), exact Editor version pinned by ADR-001
+- URP (Forward only; Forward+ is not approved)
 - OpenXR + Meta Quest Support (Multi-View / Single Pass Instanced)
 - Vulkan
 - Meta XR SDK v207+
@@ -51,7 +52,9 @@ If two files disagree, the Source of Truth file wins.
 
 ## Performance Budget
 
-- Frame time: < 11.1ms (aim for 9ms)
+- Technical acceptance: sustained 90Hz; application CPU and GPU frame times each < 11.1ms (aim for 9ms)
+- Emergency stop floor: application FPS < 72, or CPU/GPU frame time > 13.9ms; this is NOT an alternative PASS threshold
+- Measurement and FAIL/BLOCKED classification: see `docs/TEST_PLAN.md`, Performance Acceptance
 - Draw calls: < 150/eye (warning 250, hard limit 300)
 - Visible triangles: < 300k ideal (hard limit 750k)
 - Texture memory: < 400MB (hard limit 512MB)
@@ -74,42 +77,60 @@ If two files disagree, the Source of Truth file wins.
 
 ## PASS Definition
 
-A task is PASS only when ALL of the following are true:
-1. Compile: zero errors
-2. Console: zero runtime errors
-3. Relevant unit tests: PASS
-4. Relevant PlayMode tests: PASS
-5. XR Simulator test (if applicable): PASS
-6. Git diff reviewed: no unintended changes
-7. PROJECT_STATUS.md updated
-8. No performance budget breach (frame time, draw calls, GC, memory)
+A task is Technical PASS only when ALL eight conditions below are satisfied for its predeclared validation profile:
+1. Compile: zero errors.
+2. Console: zero runtime errors during the required run.
+3. Relevant unit tests: PASS.
+4. Relevant PlayMode tests: PASS.
+5. Required XR Simulator/operator/device technical checks: PASS.
+6. Required performance checks: no acceptance-budget breach.
+7. Evidence saved and `docs/PROJECT_STATUS.md` prepared with the task result, test results, evidence references, and remaining blockers.
+8. Final staged Git diff reviewed, including the evidence and status update: no unintended, unapproved, or out-of-scope changes.
 
-If ANY condition fails, the task is NOT PASS. Do not commit.
+Use the validation profiles in `docs/AUTONOMOUS_DEVELOPMENT.md`.
+A genuinely inapplicable check must be recorded as N/A with a reason before implementation; it is not a test PASS.
+An unavailable required tool, device, test, or measurement is BLOCKED, not N/A.
+A task-level N/A cannot waive a required Phase-level technical test.
 
-## Human Gate
+Tests passing alone is NOT task PASS. Evidence, status, and final diff review must also be complete.
+A proposed PASS in uncommitted status text is provisional. Persist it only if final review and commit succeed; otherwise record FAIL/BLOCKED and do not advance.
+If any required condition fails, do not commit the feature implementation.
+The only failure-time exception is the restricted diagnostic/state-only commit path in `docs/AUTONOMOUS_DEVELOPMENT.md`; it never makes the failed task PASS.
 
-There are 3 types of gates. Codex may NEVER mark a Human Gate as PASS.
+## Gates
+
+There are three gate types. Technical Gate is automated; Director Gate and Device Gate are Human Gates.
 
 ### Technical Gate (automated)
-Compile, tests, performance validation. Codex handles this.
+Codex validates compile, tests, and required performance evidence.
+A Phase Technical Gate is PASS when its AUTO tasks and required technical tests are complete.
+Human evaluations are excluded from that prerequisite.
 
 ### Director Gate (human only)
 "Is it fun?" "Does it feel right?" "Is this the right design?"
-Only Director can PASS this. Codex sets status to WAITING.
+Only the Director can approve this. Agents may request review and set WAITING, but cannot supply an approval.
 
 ### Device Gate (human only)
-Quest 3 real-device testing: comfort, tracking, FPS, thermals.
-Only Director can PASS this after wearing Quest 3.
+The Director wears Quest 3 and checks comfort, tracking, presentation, and sustained experience with the measured FPS/thermal evidence.
+Automated Quest telemetry is technical evidence, not a substitute for this approval.
+Codex never approves a Human Gate. Dots may transcribe an explicit Director decision with its source, candidate build/revision, and timestamp; it must not infer approval.
+
+The Phase sequence is:
+`AUTO tasks complete -> Technical Gate PASS -> Human Gates WAITING -> Director decisions recorded -> Phase COMPLETE`.
+Both required Human Gates must be approved for the same candidate. Technical PASS alone does not authorize the next Phase.
 
 ## After Every Implementation
 
-1. Compile - zero errors
-2. Run relevant unit tests
-3. Run relevant PlayMode tests
-4. Run XR Simulator test if applicable
-5. Check `git diff` - review your own changes
-6. Update `docs/PROJECT_STATUS.md`
-7. Commit ONLY if all PASS conditions met
+1. Implement within the approved scope.
+2. Compile, inspect runtime Console, and run the relevant unit/PlayMode tests.
+3. Run required XR and Quest technical/performance checks.
+4. Save sanitized evidence in `docs/validation/` as Markdown reports; keep generated builds and raw capture binaries outside Git.
+5. Prepare `docs/PROJECT_STATUS.md` with results, evidence references, and task/gate state.
+6. Stage the intended files and review the final staged diff, including status and evidence. Re-run affected checks if implementation or requirements changed after testing.
+7. Commit only when all applicable PASS conditions are satisfied. Include implementation, evidence, and status in the same commit.
+8. Advance only after commit succeeds. Do not require a post-commit status edit to record that commit's own SHA; Git history identifies it.
+
+On failure, use the diagnostic/state-only path instead of committing failed feature changes.
 
 ## Forbidden
 
@@ -126,9 +147,9 @@ Only Director can PASS this after wearing Quest 3.
 - Multi-Pass rendering
 - OpenGLES
 - Realtime GI / SSAO / Motion Blur / HDR
-- Deferred rendering
+- Deferred rendering / Forward+ rendering
 - Silently changing game design values
-- Marking a Human Gate (Director Gate / Device Gate) as PASS
+- Approving a Human Gate on behalf of the Director or inferring approval from silence
 - Deleting or modifying a test to make the suite pass
 - Reducing performance budgets to make validation pass
 - Replacing an APPROVED asset without updating ART_ASSET_REGISTRY.md
