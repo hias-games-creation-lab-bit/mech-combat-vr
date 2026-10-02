@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -19,8 +20,16 @@ namespace MechCombatVR.Editor
         {
             if (Application.unityVersion != "6000.3.25f1")
                 throw new InvalidOperationException("ADR-001 Editor mismatch.");
-            if (AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(PipelinePath) != null)
-                throw new InvalidOperationException("Foundation already exists; use validation, not recreation.");
+            EnsureTargetsAbsent(PipelinePath, RendererPath, ScenePath);
+            EnsureBuildSceneListEmpty();
+            if (GraphicsSettings.defaultRenderPipeline != null)
+                throw new InvalidOperationException("Project already has pipeline configuration.");
+            for (int i = 0; i < QualitySettings.names.Length; i++)
+                if (QualitySettings.GetRenderPipelineAssetAt(i) != null)
+                    throw new InvalidOperationException("Project already has a quality pipeline configuration.");
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+                if (SceneManager.GetSceneAt(i).isDirty)
+                    throw new InvalidOperationException("Save existing scene edits before foundation creation.");
 
             System.IO.Directory.CreateDirectory("Assets/Settings");
             System.IO.Directory.CreateDirectory("Assets/Scenes");
@@ -52,6 +61,19 @@ namespace MechCombatVR.Editor
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
             AssetDatabase.SaveAssets();
             Validate();
+        }
+
+        internal static void EnsureTargetsAbsent(params string[] paths)
+        {
+            foreach (string path in paths)
+                if (File.Exists(path) || Directory.Exists(path) || File.Exists(path + ".meta"))
+                    throw new InvalidOperationException($"Foundation target already exists: {path}");
+        }
+
+        internal static void EnsureBuildSceneListEmpty()
+        {
+            if (EditorBuildSettings.scenes.Length != 0)
+                throw new InvalidOperationException("Project already has build scene configuration.");
         }
 
         public static void Validate()

@@ -169,6 +169,7 @@ For each open cause, record: task ID, stable root-cause ID, failure_count, attem
 Counts persist across sessions. A diagnostic commit does not check off a task or clear a blocker.
 
 ## Completed Tasks
+- PR #2 review follow-up: creation guard protections and inconsistent M0-004 TODO text corrected; isolated FOUNDATION compile, EditMode 8/8 and PlayMode 1/1 PASS. Resources.meta finding did not reproduce and was withdrawn; unchanged. Evidence: validation/m0/2026-10-02-pr2-review-fixes.md. This does not validate M0-004.
 - M0-003: FOUNDATION PASS; initial OpenXR 1.18.0 installed, Android compile and foundation smoke verified.
 - M0-002: FOUNDATION PASS; Android settings and PlayMode verified, evidence validation/m0/2026-10-02-m0-002.md.
 - M0-001: FOUNDATION PASS; see docs/validation/m0/2026-10-02-m0-001.md. Result becomes durable with the implementation/evidence/status commit.
@@ -212,7 +213,7 @@ Counts persist across sessions. A diagnostic commit does not check off a task or
 ## Automated Test Results
 - Environment only: exact installed Editor 6000.3.25f1_e1dba0a9aba4; license entitlement resolved; isolated-from-repository batch startup log reports successful exit (0).
 - M0-001: compile/configuration validation PASS, PlayMode 1/1 PASS; separate gameplay unit tests N/A (no gameplay logic). TEST-M0-001 PASS. Prior preflight-only block was a corrected applicability error.
-- M0-002: Android-target compile and settings assertions PASS; PlayMode 1/1 PASS. M0-004 through M0-013 remain TODO. M0-003 package import/compile and PlayMode 1/1 PASS. TEST-M0-002 (APK build) not run yet; TEST-M0-003 through TEST-M0-005/device performance remain pending with no available Quest.
+- M0-002: Android-target compile and settings assertions PASS; PlayMode 1/1 PASS. M0-004 is BLOCKED; M0-005 through M0-013 remain TODO. M0-003 package import/compile and PlayMode 1/1 PASS. TEST-M0-002 (APK build) not run yet; TEST-M0-003 through TEST-M0-005/device performance remain pending with no available Quest.
 
 ## Human Feedback
 (none yet - see docs/HUMAN_FEEDBACK.md)
