@@ -17,7 +17,7 @@ M0
 RUNNING
 
 ## Current Task
-M0-003 OpenXR initial installation
+M0-004 Meta XR All-in-One initial installation
 
 ## Autonomous
 YES
@@ -148,14 +148,16 @@ These entries never block completion of the AUTO task list; they block Phase com
 | HG-M4-DEVICE | Director wearing Quest 3 | Full playtest, comfort, sustained performance/thermal review | NOT_READY |
 
 ## Current Validation Record
-- Task: M0-003 PASS (provisional until final review and commit); profile FOUNDATION, declared before initial package installation.
-- Initial package selection: com.unity.xr.openxr 1.18.0, highest stable version observed in Unity Registry, Unity requirement 6000.0; excludes 1.19.0-pre.1. Meets Meta XR Operator documented minimum 1.17.0.
-- Required: resolved package/lock inspection, exact Editor and Android-target compile, persisted Android/Forward assertions, existing PlayMode smoke without runtime errors; final staged implementation/evidence/status review.
-- N/A: separate gameplay unit tests (package installation without new gameplay); XR session/input/Simulator/device/performance checks (no XR loader/rig configured in this installation-only task). These are pending later setup/runtime tasks and Phase checks, not waived for lack of hardware.
-- Base: cc0110f49daa98de460c5ca3bf5ce89315c0dc3c. APK: none. Human approvals: none.
-- Results: Android compile/configuration PASS; PlayMode 1 passed / 0 failed / 0 skipped. [M0-003 evidence](validation/m0/2026-10-02-m0-003.md).
+- Task: M0-004 FAIL (initial compile); repair verification running, not PASS. Profile FOUNDATION, declared before initial package installation.
+- Initial package: com.meta.xr.sdk.all 207.0.0, official Unity Registry latest observed, unity requirement 6000.0; initial dependent packages as specified by its manifest. Existing Unity/URP/OpenXR versions must remain pinned.
+- Required: exact resolved versions and dependency compatibility inspection, Android-target compile, unchanged Android/Forward checks, existing foundation PlayMode smoke with zero unexpected runtime errors; review package-generated settings and final staged implementation/evidence/status.
+- N/A: separate gameplay unit tests (no gameplay code); XR session/Simulator/device/performance (SDK installation without configured runtime rig); these remain required at applicable later setup/runtime tasks and Phase handoff.
+- Base: 40fe65425b69211edf1897ce6bd66a58d28c810c. APK: none. Human approvals: none. No unknown Setup Tool automatic fixes authorized.
+- Previous task: [M0-003](validation/m0/2026-10-02-m0-003.md).
+- Failure evidence: [M0-004 initial compile](validation/m0/2026-10-02-m0-004-failure1.md). Failed implementation remains local and unstaged.
 
 ## Retry / Failure History
+- M0-004 / META-BUILTIN-MODULES-MISSING: failure_count=1, open. Initial SDK compile failed with CS1069 for AnimationModule (Animator/HumanBodyBones) and AssetBundleModule (AssetBundle). PlayMode did not execute. First repair adds the exact Editor built-in animation and assetbundle modules 1.0.0; retry pending. Raw evidence: ../m0-004-import-validate-playmode.log. No failed feature commit.
 - Applicability correction (parent explicitly authorized resume): commit 47206b9 incorrectly applied the Phase-level Quest requirement to M0-001. FOUNDATION and TEST-M0-001 do not require a connected Quest. Preserve the observation/count below as history; ENV-QUEST-NO-DEVICE is an unresolved dependency for M0-010 onward, not a present M0-001 failure. No counter was reset and no device retest occurred. M0-001 through M0-009 may proceed subject to each task's actual requirements; this does not authorize Phase PASS.
 - M0-001 / ENV-QUEST-NO-DEVICE: failure_count=1, open, observed 2026-10-02T11:15Z. Authorized ADB daemon started successfully, but `adb devices -l` returned no devices. No repair/retest of this root cause attempted. Next: connect an available Quest 3 with approved development/USB debugging access, then explicitly resume. Evidence: validation/m0/2026-10-02-environment-preflight.md.
 - PREFLIGHT / ENV-SANDBOX-HOST-ACCESS: failure_count=1, resolved for checked operations. Initial Git Schannel credential and ADB daemon operations failed in the sandbox; permission-reviewed host executions succeeded. This did not validate Quest connectivity or any M0 task. Counts retained.
