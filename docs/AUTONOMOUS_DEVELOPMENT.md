@@ -127,13 +127,17 @@ Phase complete
 
 ## Error Recovery
 
+Retry limit is per ROOT CAUSE, not per attempt count.
+Different errors with different causes each get their own 3-attempt budget.
+
 ```
 Error occurs
+ -> Identify root cause
  -> Attempt fix #1
  -> Re-test
- -> If same error: Attempt fix #2
+ -> If SAME root cause: Attempt fix #2
  -> Re-test
- -> If same error: Attempt fix #3
+ -> If SAME root cause: Attempt fix #3
  -> Re-test
  -> If same error: STOP
 
@@ -144,6 +148,19 @@ Report to Director:
 - Recommended action
 - Whether rollback is needed
 ```
+
+## Performance Budget Breach = BLOCKED
+
+If any of the following are exceeded, the task is BLOCKED:
+- FPS < 72Hz (hard floor)
+- GPU frame time > 13.9ms
+- Draw calls > 300
+- GC Alloc > 0 B/frame during gameplay
+- Texture memory > 512MB
+
+Do NOT attempt to fix by relaxing the budget.
+Do NOT attempt endless optimization loops.
+Report to Director with measurements and recommended action.
 
 ## Cloud vs Local
 
