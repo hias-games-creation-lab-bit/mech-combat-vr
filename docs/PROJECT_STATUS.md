@@ -14,7 +14,7 @@
 M0
 
 ## Phase State
-NOT_STARTED
+BLOCKED
 
 ## Current Task
 M0-001 Unity project creation
@@ -23,7 +23,7 @@ M0-001 Unity project creation
 YES
 
 ## Technical Gate
-NOT_STARTED
+BLOCKED
 
 ## Human Gate
 NOT_READY
@@ -148,15 +148,17 @@ These entries never block completion of the AUTO task list; they block Phase com
 | HG-M4-DEVICE | Director wearing Quest 3 | Full playtest, comfort, sustained performance/thermal review | NOT_READY |
 
 ## Current Validation Record
-- Profile: NOT_SELECTED (choose before starting the current task)
-- Required checks and N/A reasons: not recorded
-- Tested source revision / working-tree fingerprint: not recorded
-- Candidate APK checksum / external artifact location: not recorded
-- Evidence report: not recorded
+- Profile: FOUNDATION selected for M0-001 before repository implementation; diagnostic/state-only record for this stopped preflight.
+- Required checks: exact Editor/license, project artifact/URP inspection and compile, relevant available foundation checks; M0 Phase TEST-M0-001 through TEST-M0-005 remain required. No repository implementation or project validation was performed.
+- Task-level N/A declared before implementation: gameplay unit/PlayMode, XR input and gameplay performance checks for M0-001 only, because no gameplay/XR feature exists yet. Editor/compile and all required Phase device checks are not waived. Missing Quest connectivity is BLOCKED, not N/A.
+- Tested source revision / working-tree fingerprint: 8cbface11a58a504993cca579764fac279a927a7, initially clean index and working tree; docs-only changes after preflight.
+- Candidate APK checksum / external artifact location: none; no candidate built.
+- Evidence report: [M0 environment preflight](validation/m0/2026-10-02-environment-preflight.md)
 - Human approval reference: none
 
 ## Retry / Failure History
-(none)
+- M0-001 / ENV-QUEST-NO-DEVICE: failure_count=1, open, observed 2026-10-02T11:15Z. Authorized ADB daemon started successfully, but `adb devices -l` returned no devices. No repair/retest of this root cause attempted. Next: connect an available Quest 3 with approved development/USB debugging access, then explicitly resume. Evidence: validation/m0/2026-10-02-environment-preflight.md.
+- PREFLIGHT / ENV-SANDBOX-HOST-ACCESS: failure_count=1, resolved for checked operations. Initial Git Schannel credential and ADB daemon operations failed in the sandbox; permission-reviewed host executions succeeded. This did not validate Quest connectivity or any M0 task. Counts retained.
 
 For each open cause, record: task ID, stable root-cause ID, failure_count, attempted fixes, evidence path, last update, and next action.
 Counts persist across sessions. A diagnostic commit does not check off a task or clear a blocker.
@@ -201,10 +203,14 @@ Counts persist across sessions. A diagnostic commit does not check off a task or
 - OpenGLES
 
 ## Automated Test Results
-(not yet tested)
+- Environment only: exact installed Editor 6000.3.25f1_e1dba0a9aba4; license entitlement resolved; isolated-from-repository batch startup log reports successful exit (0).
+- M0-001: BLOCKED before repository project creation. Compile, runtime Console, unit/PlayMode and TEST-M0-001: NOT RUN for the repository.
+- M0-002 through M0-013: TODO / NOT RUN. TEST-M0-002 through TEST-M0-005 and Quest performance: NOT RUN; required device unavailable.
 
 ## Human Feedback
 (none yet - see docs/HUMAN_FEEDBACK.md)
 
 ## Blockers
-(none)
+- ENV-QUEST-NO-DEVICE: no ADB device returned by the successful host-level query. Per explicit run instructions and AUTONOMOUS_DEVELOPMENT.md, stop on required environment absence rather than advance to another task.
+- Meta VR CLI was not discoverable on PATH; no callable Unity/XR Operator integration was exposed. XR Simulator/Meta SDK are not installed in this docs-only repository; installation and compatibility remain unattempted M0 work, not PASS.
+- Resume requires Quest connectivity and the parent's explicit instruction to handle the recorded BLOCKED state. Human Gates remain NOT_READY; M1 is not authorized.
