@@ -14,3 +14,16 @@
   - m0-review-playmode.log: 815D05149CA1F5F389B905C1A72E90795971BA7FB14DD158925F03EA95DDEC54
   - m0-review-playmode.xml: E519598B2B2DD821560B945A06E6F75F0A1A139FE2DB87CBCB5395AC5B87C545
 - Required final staged review is limited to the guard, its tests/metas, this evidence and PROJECT_STATUS. M0-004 implementation remains excluded. Its runtime failure and retry history are unchanged by these passing checks.
+
+## Retrospective retained-worktree verification
+
+On 2026-10-02 at approximately 12:31 UTC, after Claude requested stronger tested-to-committed traceability, the retained m0-review-check worktree was inspected without another Unity/test run. All six implementation/test/meta files below matched commit 2a68a57f7dd61001216db26d782308b8a11e52a1 using git hash-object --path (Git line-ending normalization). This establishes current retained-content equality, not independently captured test-time hashes; no test-time fingerprint is claimed retroactively. Raw on-disk SHA256 values are recorded below and can differ from repository bytes due to CRLF normalization.
+
+| File | Matching Git blob | Current retained-file SHA256 |
+|---|---|---|
+| Assets/Editor/FoundationSetup.cs | 9ad2607eeedcfa009dd1caa4be62196c833e272c | 7446D81A3294320FA5372EB8985B13D447F019912069EE7B1EA319D6FE889888 |
+| Assets/Tests/Editor.meta | 7d7c3e1e374410abb76c96c54b4651f1a64e8100 | C8055129D328D8179E4CABEB34E00F12839C1F81CC39C0BBDC47A1B35B70DB14 |
+| Assets/Tests/Editor/FoundationCreationGuardTests.cs | 30dde100640a057941bc35ce99531fb687ca907b | D2CED2B3C83F8A09841BB5C54F0E139A9D1CE2A6B87F6305D0590E30D6D943B6 |
+| Assets/Tests/Editor/FoundationCreationGuardTests.cs.meta | f2c107f932022d79151ce208635e9a4f4838e24c | 3F65CCF9ADE5251319422B81A72FC6A1A62371795270F626B4914F03D0777E3A |
+| Assets/Tests/Editor/MechCombatVR.Foundation.Editor.Tests.asmdef | 65371cf2c9a88c42b818f9204beb8ac576631028 | 40DDF15575E350A8C99F1996F1B20DE64D801617B2D1F5BFC936106AA3B60300 |
+| Assets/Tests/Editor/MechCombatVR.Foundation.Editor.Tests.asmdef.meta | 6737fd1ebe86642b29252f1f99f24fe828e9c837 | 9AE486DB09869CD45628ED24B66D9694535EF09FD579D528DEE9E19E693F75D2 |
