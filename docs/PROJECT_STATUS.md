@@ -14,7 +14,7 @@
 M0
 
 ## Phase State
-RUNNING
+BLOCKED
 
 ## Current Task
 M0-004 Meta XR All-in-One initial installation
@@ -23,7 +23,7 @@ M0-004 Meta XR All-in-One initial installation
 YES
 
 ## Technical Gate
-RUNNING
+BLOCKED
 
 ## Human Gate
 NOT_READY
@@ -148,16 +148,18 @@ These entries never block completion of the AUTO task list; they block Phase com
 | HG-M4-DEVICE | Director wearing Quest 3 | Full playtest, comfort, sustained performance/thermal review | NOT_READY |
 
 ## Current Validation Record
-- Task: M0-004 FAIL (initial compile and first repair); second/final repair pending, not PASS. Profile FOUNDATION, declared before initial package installation.
+- Task: M0-004 BLOCKED; module repair compiled, but PlayMode startup failed and SDK initialization changed settings requiring review. Profile FOUNDATION, declared before initial package installation.
 - Initial package: com.meta.xr.sdk.all 207.0.0, official Unity Registry latest observed, unity requirement 6000.0; initial dependent packages as specified by its manifest. Existing Unity/URP/OpenXR versions must remain pinned.
 - Required: exact resolved versions and dependency compatibility inspection, Android-target compile, unchanged Android/Forward checks, existing foundation PlayMode smoke with zero unexpected runtime errors; review package-generated settings and final staged implementation/evidence/status.
 - N/A: separate gameplay unit tests (no gameplay code); XR session/Simulator/device/performance (SDK installation without configured runtime rig); these remain required at applicable later setup/runtime tasks and Phase handoff.
 - Base: 40fe65425b69211edf1897ce6bd66a58d28c810c. APK: none. Human approvals: none. No unknown Setup Tool automatic fixes authorized.
 - Previous task: [M0-003](validation/m0/2026-10-02-m0-003.md).
 - Failure evidence: [M0-004 initial compile](validation/m0/2026-10-02-m0-004-failure1.md). Failed implementation remains local and unstaged.
+- Latest evidence: [M0-004 runtime/setup stop](validation/m0/2026-10-02-m0-004-runtime-block.md). Await parent-managed Claude Code review and decision on SDK-generated settings/next diagnostic attempt; no feature commit or M0-005 advancement.
 
 ## Retry / Failure History
-- M0-004 / META-BUILTIN-MODULES-MISSING: failure_count=2, open. Initial compile lacked Animation/AssetBundle modules. First repair added those 1.0.0 modules and resolved those errors, but exposed the same missing built-in dependency cause: Physics2D (CS0103), ParticleSystemRenderer (CS1069). Compile failed; PlayMode did not execute. One final repair/retest remains. Evidence: validation/m0/2026-10-02-m0-004-failure1.md. No failed feature commit.
+- M0-004 / META-BUILTIN-MODULES-MISSING: failure_count=2, resolved without reset. Final permitted repair added physics2d, particlesystem, unitywebrequesttexture 1.0.0 (the latter also required by Voice Hub source); compile and Android/Forward assertions passed. Subsequent failure is a distinct runtime initialization path, not another compiler dependency failure. Evidence: validation/m0/2026-10-02-m0-004-runtime-block.md.
+- M0-004 / META-MRUK-GLOBAL-CONTEXT: failure_count=1, open. RuntimeInitializeOnLoad MRUK.CreateGlobalContext failed, native log decoding threw ArgumentException, Unity process ended without test XML. No repair/retest yet; exact cause unproven. Evidence: validation/m0/2026-10-02-m0-004-runtime-block.md.
 - Applicability correction (parent explicitly authorized resume): commit 47206b9 incorrectly applied the Phase-level Quest requirement to M0-001. FOUNDATION and TEST-M0-001 do not require a connected Quest. Preserve the observation/count below as history; ENV-QUEST-NO-DEVICE is an unresolved dependency for M0-010 onward, not a present M0-001 failure. No counter was reset and no device retest occurred. M0-001 through M0-009 may proceed subject to each task's actual requirements; this does not authorize Phase PASS.
 - M0-001 / ENV-QUEST-NO-DEVICE: failure_count=1, open, observed 2026-10-02T11:15Z. Authorized ADB daemon started successfully, but `adb devices -l` returned no devices. No repair/retest of this root cause attempted. Next: connect an available Quest 3 with approved development/USB debugging access, then explicitly resume. Evidence: validation/m0/2026-10-02-environment-preflight.md.
 - PREFLIGHT / ENV-SANDBOX-HOST-ACCESS: failure_count=1, resolved for checked operations. Initial Git Schannel credential and ADB daemon operations failed in the sandbox; permission-reviewed host executions succeeded. This did not validate Quest connectivity or any M0 task. Counts retained.
@@ -215,6 +217,7 @@ Counts persist across sessions. A diagnostic commit does not check off a task or
 (none yet - see docs/HUMAN_FEEDBACK.md)
 
 ## Blockers
+- M0-004 runtime validation failed; SDK startup also changed orientation, install location and vSync without an explicitly invoked Setup Tool fix. Stop for parent review of concrete changes and next diagnostic scope. Local DevAgent settings contain generated connection/authentication data, remain disabled, unstaged and excluded/redacted from review transfer. Do not publish or commit these values. No feature commit until full required validation and Claude Code review.
 - Deferred device dependency ENV-QUEST-NO-DEVICE: no ADB device returned by the successful host-level query. Blocks M0-010 onward and Phase handoff, not M0-001 through M0-009 solely on that basis. Prior stop interpretation is corrected above, with history retained.
-- Meta VR CLI was not discoverable on PATH; no callable Unity/XR Operator integration was exposed. XR Simulator/Meta SDK are not installed in this foundation repository; installation and compatibility remain unattempted M0 work, not PASS.
+- Meta VR CLI was not discoverable on PATH; no callable Unity/XR Operator integration was exposed. Meta SDK 207.0.0 is resolved in the local failed M0-004 working tree, not committed or PASS. XR Simulator/CLI/Operator setup remains pending.
 - Parent explicitly authorized M0-001 resume and eligible work through M0-009. M0-010 onward still requires Quest connectivity. Human Gates remain NOT_READY; M1 is not authorized.
