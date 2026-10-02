@@ -1,0 +1,5 @@
+{
+  "name": "MechCombatVR.Foundation.PlayMode",
+  "references": ["Unity.RenderPipelines.Universal.Runtime", "Unity.RenderPipelines.Core.Runtime"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}

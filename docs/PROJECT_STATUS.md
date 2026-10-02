@@ -14,16 +14,16 @@
 M0
 
 ## Phase State
-NOT_STARTED
+BLOCKED
 
 ## Current Task
-M0-001 Unity project creation
+M0-004 Meta XR All-in-One initial installation
 
 ## Autonomous
 YES
 
 ## Technical Gate
-NOT_STARTED
+BLOCKED
 
 ## Human Gate
 NOT_READY
@@ -51,9 +51,9 @@ NOT_READY
 ## Tasks (AUTO only)
 
 ### M0 - Technical Foundation
-- [ ] M0-001 Create Unity 6.3 LTS (6000.3.25f1) project (Universal 3D / URP); verify ProjectVersion.txt matches ADR-001
-- [ ] M0-002 Configure Android build settings (IL2CPP, ARM64, Vulkan, minSdk 32, targetSdk 34)
-- [ ] M0-003 Install OpenXR Plugin (compatible latest stable)
+- [x] M0-001 Create Unity 6.3 LTS (6000.3.25f1) project (Universal 3D / URP); verify ProjectVersion.txt matches ADR-001
+- [x] M0-002 Configure Android build settings (IL2CPP, ARM64, Vulkan, minSdk 32, targetSdk 34)
+- [x] M0-003 Install OpenXR Plugin (compatible latest stable)
 - [ ] M0-004 Install Meta XR SDK All-in-One v207+
 - [ ] M0-005 Run Meta XR SDK Project Setup Tool; review findings and apply only explicitly approved fixes (no Editor upgrade)
 - [ ] M0-006 Configure URP Asset (Forward, MSAA 4x, HDR Off, Post Processing Off)
@@ -148,21 +148,35 @@ These entries never block completion of the AUTO task list; they block Phase com
 | HG-M4-DEVICE | Director wearing Quest 3 | Full playtest, comfort, sustained performance/thermal review | NOT_READY |
 
 ## Current Validation Record
-- Profile: NOT_SELECTED (choose before starting the current task)
-- Required checks and N/A reasons: not recorded
-- Tested source revision / working-tree fingerprint: not recorded
-- Candidate APK checksum / external artifact location: not recorded
-- Evidence report: not recorded
-- Human approval reference: none
+- Latest diagnostic: one authorized LLDB launch could not reach the intended project/runtime; expected log/XML absent, Unity recorded only executable argument and exited 0. DIAGNOSTIC_UNAVAILABLE, not PASS. MRUK failure_count remains 2. No restart authorized. See [bounded live diagnostic](validation/m0/2026-10-02-m0-004-live-diagnostic.md). Earlier statements about awaiting diagnostic authorization below are historical; the single approved diagnostic is now spent.
+- Task: M0-004 BLOCKED; module repair compiled, but PlayMode startup failed and SDK initialization changed settings requiring review. Profile FOUNDATION, declared before initial package installation.
+- Initial package: com.meta.xr.sdk.all 207.0.0, official Unity Registry latest observed, unity requirement 6000.0; initial dependent packages as specified by its manifest. Existing Unity/URP/OpenXR versions must remain pinned.
+- Required: exact resolved versions and dependency compatibility inspection, Android-target compile, unchanged Android/Forward checks, existing foundation PlayMode smoke with zero unexpected runtime errors; review package-generated settings and final staged implementation/evidence/status.
+- N/A: separate gameplay unit tests (no gameplay code); XR session/Simulator/device/performance (SDK installation without configured runtime rig); these remain required at applicable later setup/runtime tasks and Phase handoff.
+- Base: 40fe65425b69211edf1897ce6bd66a58d28c810c. APK: none. Human approvals: none. No unknown Setup Tool automatic fixes authorized.
+- Previous task: [M0-003](validation/m0/2026-10-02-m0-003.md).
+- Failure evidence: [M0-004 initial compile](validation/m0/2026-10-02-m0-004-failure1.md). Failed implementation remains local and unstaged.
+- Latest evidence: [M0-004 runtime/setup stop](validation/m0/2026-10-02-m0-004-runtime-block.md). Await parent-managed Claude Code review and decision on SDK-generated settings/next diagnostic attempt; no feature commit or M0-005 advancement.
+- Authorized containment completed: SDK updater local preference disabled and three automatic settings restored to HEAD; no Unity rerun. See [containment and publication audit](validation/m0/2026-10-02-m0-004-containment.md). Parent relayed user approval to push passing implementation plus diagnostic history and create a Draft PR; failed M0-004 implementation remains unstaged and excluded.
+- Subsequent authorized non-batch comparison failed; count now 2, exact exit code and limitations recorded in [comparison evidence](validation/m0/2026-10-02-m0-004-nonbatch.md). M0-004 remains BLOCKED; no further rerun authorized.
+- Read-only follow-up found matching existing WER/Application fault evidence and an existing local dump; no rerun or counter change. See [existing crash evidence](validation/m0/2026-10-02-m0-004-existing-crash-evidence.md). Retained review-worktree file hashes were verified retrospectively against 2a68a57 and recorded in the review-fix report, not represented as test-time hashes.
+- Parent-authorized local analysis of that existing dump found MRUK native frames leading to ucrtbase!abort, exception parameter 7; initial context-creation failure cause remains unknown. No SDK rerun or counter change. See [local dump analysis](validation/m0/2026-10-02-m0-004-local-dump-analysis.md).
 
 ## Retry / Failure History
-(none)
+- M0-004 / META-BUILTIN-MODULES-MISSING: failure_count=2, resolved without reset. Final permitted repair added physics2d, particlesystem, unitywebrequesttexture 1.0.0 (the latter also required by Voice Hub source); compile and Android/Forward assertions passed. Subsequent failure is a distinct runtime initialization path, not another compiler dependency failure. Evidence: validation/m0/2026-10-02-m0-004-runtime-block.md.
+- M0-004 / META-MRUK-GLOBAL-CONTEXT: failure_count=2, open. Authorized non-batch comparison reproduced the context-initialization failure with caught log-decode exception, no XML and process exit -1073740791. The decode exception, context failure and process termination are separate observations, not a proven single causal chain. One runtime retry remains under the limit; the subsequently authorized single LLDB diagnostic ended before the intended task ran and does not authorize another launch. Evidence: validation/m0/2026-10-02-m0-004-nonbatch.md.
+- Applicability correction (parent explicitly authorized resume): commit 47206b9 incorrectly applied the Phase-level Quest requirement to M0-001. FOUNDATION and TEST-M0-001 do not require a connected Quest. Preserve the observation/count below as history; ENV-QUEST-NO-DEVICE was a deferred dependency for M0-010 onward (connection subsequently resolved), not a present M0-001 failure. No counter was reset; the later connection retest does not constitute device acceptance. M0-001 through M0-009 may proceed subject to each task's actual requirements; this does not authorize Phase PASS.
+- M0-001 / ENV-QUEST-NO-DEVICE: failure_count=1, subsequently resolved by authorized USB connection (not reset), observed 2026-10-02T11:15Z. Authorized ADB daemon started successfully, but `adb devices -l` returned no devices. Original observation retained; subsequent existing-server ADB query confirmed one authorized Quest 3 after user setup. This does not validate device acceptance. Evidence: validation/m0/2026-10-02-environment-preflight.md.
+- PREFLIGHT / ENV-SANDBOX-HOST-ACCESS: failure_count=1, resolved for checked operations. Initial Git Schannel credential and ADB daemon operations failed in the sandbox; permission-reviewed host executions succeeded. This did not validate Quest connectivity or any M0 task. Counts retained.
 
 For each open cause, record: task ID, stable root-cause ID, failure_count, attempted fixes, evidence path, last update, and next action.
 Counts persist across sessions. A diagnostic commit does not check off a task or clear a blocker.
 
 ## Completed Tasks
-(none yet)
+- PR #2 review follow-up: creation guard protections and inconsistent M0-004 TODO text corrected; isolated FOUNDATION compile, EditMode 8/8 and PlayMode 1/1 PASS. Resources.meta finding did not reproduce and was withdrawn; unchanged. Evidence: validation/m0/2026-10-02-pr2-review-fixes.md. This does not validate M0-004.
+- M0-003: FOUNDATION PASS; initial OpenXR 1.18.0 installed, Android compile and foundation smoke verified.
+- M0-002: FOUNDATION PASS; Android settings and PlayMode verified, evidence validation/m0/2026-10-02-m0-002.md.
+- M0-001: FOUNDATION PASS; see docs/validation/m0/2026-10-02-m0-001.md. Result becomes durable with the implementation/evidence/status commit.
 
 ## Performance Targets
 - Acceptance: sustained 90Hz; application CPU and GPU frame times each < 11.1ms (aim for 9ms)
@@ -201,10 +215,17 @@ Counts persist across sessions. A diagnostic commit does not check off a task or
 - OpenGLES
 
 ## Automated Test Results
-(not yet tested)
+- Environment only: exact installed Editor 6000.3.25f1_e1dba0a9aba4; license entitlement resolved; isolated-from-repository batch startup log reports successful exit (0).
+- M0-001: compile/configuration validation PASS, PlayMode 1/1 PASS; separate gameplay unit tests N/A (no gameplay logic). TEST-M0-001 PASS. Prior preflight-only block was a corrected applicability error.
+- M0-002: Android-target compile and settings assertions PASS; PlayMode 1/1 PASS. M0-004 is BLOCKED; M0-005 through M0-013 remain TODO. M0-003 package import/compile and PlayMode 1/1 PASS. TEST-M0-002 (APK build) not run yet; TEST-M0-003 through TEST-M0-005/device performance remain pending; Quest 3 is now USB-authorized but these tests have not run.
 
 ## Human Feedback
 (none yet - see docs/HUMAN_FEEDBACK.md)
 
 ## Blockers
-(none)
+- Latest stop: bounded LLDB diagnostic did not execute the intended task; no initial native error bytes recovered. M0-004 remains BLOCKED at runtime failure_count=2. No further launch, SDK fix or setting adoption is authorized. See live-diagnostic evidence above.
+- Authorized non-batch comparison failed; additional automatic Audio/Graphics/Quality settings changes remain local, unapproved and unstaged. Original updater-controlled three settings stayed restored; updater preference remained 0. No further rerun or setting adoption before parent/Claude review. Evidence: validation/m0/2026-10-02-m0-004-nonbatch.md.
+- M0-004 runtime validation remains failed; restored orientation/install-location/vSync and disabled SDK updater preference survived the authorized comparison. Await Claude review and next diagnostic scope. Local DevAgent settings contain generated connection/authentication data, remain disabled, unstaged and excluded from publication. No feature commit until full required validation and Claude Code review.
+- Device connection prerequisite subsequently resolved: one Quest 3 now reports authorized ADB state device. No APK/XR/device/performance acceptance is implied; those tests remain pending. Historical no-device observation/count retained.
+- Meta VR CLI was not discoverable on PATH; no callable Unity/XR Operator integration was exposed. Meta SDK 207.0.0 is resolved in the local failed M0-004 working tree, not committed or PASS. XR Simulator/CLI/Operator setup remains pending.
+- Parent explicitly authorized M0-001 resume and eligible work through M0-009. M0-010 onward still requires Quest connectivity. Human Gates remain NOT_READY; M1 is not authorized.

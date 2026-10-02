@@ -1,0 +1,5 @@
+{
+  "name": "MechCombatVR.Foundation.Editor.Tests",
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}
