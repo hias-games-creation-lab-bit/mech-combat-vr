@@ -156,6 +156,7 @@ These entries never block completion of the AUTO task list; they block Phase com
 - Previous task: [M0-003](validation/m0/2026-10-02-m0-003.md).
 - Failure evidence: [M0-004 initial compile](validation/m0/2026-10-02-m0-004-failure1.md). Failed implementation remains local and unstaged.
 - Latest evidence: [M0-004 runtime/setup stop](validation/m0/2026-10-02-m0-004-runtime-block.md). Await parent-managed Claude Code review and decision on SDK-generated settings/next diagnostic attempt; no feature commit or M0-005 advancement.
+- Authorized containment completed: SDK updater local preference disabled and three automatic settings restored to HEAD; no Unity rerun. See [containment and publication audit](validation/m0/2026-10-02-m0-004-containment.md). Parent relayed user approval to push passing implementation plus diagnostic history and create a Draft PR; failed M0-004 implementation remains unstaged and excluded.
 
 ## Retry / Failure History
 - M0-004 / META-BUILTIN-MODULES-MISSING: failure_count=2, resolved without reset. Final permitted repair added physics2d, particlesystem, unitywebrequesttexture 1.0.0 (the latter also required by Voice Hub source); compile and Android/Forward assertions passed. Subsequent failure is a distinct runtime initialization path, not another compiler dependency failure. Evidence: validation/m0/2026-10-02-m0-004-runtime-block.md.
@@ -217,7 +218,7 @@ Counts persist across sessions. A diagnostic commit does not check off a task or
 (none yet - see docs/HUMAN_FEEDBACK.md)
 
 ## Blockers
-- M0-004 runtime validation failed; SDK startup also changed orientation, install location and vSync without an explicitly invoked Setup Tool fix. Stop for parent review of concrete changes and next diagnostic scope. Local DevAgent settings contain generated connection/authentication data, remain disabled, unstaged and excluded/redacted from review transfer. Do not publish or commit these values. No feature commit until full required validation and Claude Code review.
+- M0-004 runtime validation remains failed; automatic orientation/install-location/vSync changes were restored under explicit user authorization, and SDK updater local preference disabled without Unity rerun. Await Claude review and next diagnostic scope. Local DevAgent settings contain generated connection/authentication data, remain disabled, unstaged and excluded from publication. No feature commit until full required validation and Claude Code review.
 - Deferred device dependency ENV-QUEST-NO-DEVICE: no ADB device returned by the successful host-level query. Blocks M0-010 onward and Phase handoff, not M0-001 through M0-009 solely on that basis. Prior stop interpretation is corrected above, with history retained.
 - Meta VR CLI was not discoverable on PATH; no callable Unity/XR Operator integration was exposed. Meta SDK 207.0.0 is resolved in the local failed M0-004 working tree, not committed or PASS. XR Simulator/CLI/Operator setup remains pending.
 - Parent explicitly authorized M0-001 resume and eligible work through M0-009. M0-010 onward still requires Quest connectivity. Human Gates remain NOT_READY; M1 is not authorized.
