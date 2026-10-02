@@ -17,7 +17,7 @@ M0
 RUNNING
 
 ## Current Task
-M0-002 Android build configuration
+M0-003 OpenXR initial installation
 
 ## Autonomous
 YES
@@ -53,7 +53,7 @@ NOT_READY
 ### M0 - Technical Foundation
 - [x] M0-001 Create Unity 6.3 LTS (6000.3.25f1) project (Universal 3D / URP); verify ProjectVersion.txt matches ADR-001
 - [x] M0-002 Configure Android build settings (IL2CPP, ARM64, Vulkan, minSdk 32, targetSdk 34)
-- [ ] M0-003 Install OpenXR Plugin (compatible latest stable)
+- [x] M0-003 Install OpenXR Plugin (compatible latest stable)
 - [ ] M0-004 Install Meta XR SDK All-in-One v207+
 - [ ] M0-005 Run Meta XR SDK Project Setup Tool; review findings and apply only explicitly approved fixes (no Editor upgrade)
 - [ ] M0-006 Configure URP Asset (Forward, MSAA 4x, HDR Off, Post Processing Off)
@@ -148,12 +148,12 @@ These entries never block completion of the AUTO task list; they block Phase com
 | HG-M4-DEVICE | Director wearing Quest 3 | Full playtest, comfort, sustained performance/thermal review | NOT_READY |
 
 ## Current Validation Record
-- Task: M0-002 PASS (provisional until final review and commit); profile FOUNDATION, declared before implementation.
-- Required: exact Editor, Android target compile with zero C# errors, settings readback assertions for IL2CPP / ARM64 only / Vulkan only / minSdk32 / targetSdk34, unchanged foundation PlayMode smoke with no runtime errors; staged scope/evidence/status review.
-- N/A: separate gameplay unit tests (no gameplay logic changed); XR Simulator/input/device/performance (Android build configuration only, not XR/runtime behavior). APK generation is deferred to M0-009 / TEST-M0-002; required Phase device tests remain pending, not waived.
-- Results: Android compile/configuration readback PASS after restart; PlayMode 1 passed / 0 failed / 0 skipped. Evidence and fingerprints: [M0-002](validation/m0/2026-10-02-m0-002.md).
-- Candidate APK: none. Human approvals: none.
-- Previous task evidence: [M0-001](validation/m0/2026-10-02-m0-001.md).
+- Task: M0-003 PASS (provisional until final review and commit); profile FOUNDATION, declared before initial package installation.
+- Initial package selection: com.unity.xr.openxr 1.18.0, highest stable version observed in Unity Registry, Unity requirement 6000.0; excludes 1.19.0-pre.1. Meets Meta XR Operator documented minimum 1.17.0.
+- Required: resolved package/lock inspection, exact Editor and Android-target compile, persisted Android/Forward assertions, existing PlayMode smoke without runtime errors; final staged implementation/evidence/status review.
+- N/A: separate gameplay unit tests (package installation without new gameplay); XR session/input/Simulator/device/performance checks (no XR loader/rig configured in this installation-only task). These are pending later setup/runtime tasks and Phase checks, not waived for lack of hardware.
+- Base: cc0110f49daa98de460c5ca3bf5ce89315c0dc3c. APK: none. Human approvals: none.
+- Results: Android compile/configuration PASS; PlayMode 1 passed / 0 failed / 0 skipped. [M0-003 evidence](validation/m0/2026-10-02-m0-003.md).
 
 ## Retry / Failure History
 - Applicability correction (parent explicitly authorized resume): commit 47206b9 incorrectly applied the Phase-level Quest requirement to M0-001. FOUNDATION and TEST-M0-001 do not require a connected Quest. Preserve the observation/count below as history; ENV-QUEST-NO-DEVICE is an unresolved dependency for M0-010 onward, not a present M0-001 failure. No counter was reset and no device retest occurred. M0-001 through M0-009 may proceed subject to each task's actual requirements; this does not authorize Phase PASS.
@@ -164,6 +164,7 @@ For each open cause, record: task ID, stable root-cause ID, failure_count, attem
 Counts persist across sessions. A diagnostic commit does not check off a task or clear a blocker.
 
 ## Completed Tasks
+- M0-003: FOUNDATION PASS; initial OpenXR 1.18.0 installed, Android compile and foundation smoke verified.
 - M0-002: FOUNDATION PASS; Android settings and PlayMode verified, evidence validation/m0/2026-10-02-m0-002.md.
 - M0-001: FOUNDATION PASS; see docs/validation/m0/2026-10-02-m0-001.md. Result becomes durable with the implementation/evidence/status commit.
 
@@ -206,7 +207,7 @@ Counts persist across sessions. A diagnostic commit does not check off a task or
 ## Automated Test Results
 - Environment only: exact installed Editor 6000.3.25f1_e1dba0a9aba4; license entitlement resolved; isolated-from-repository batch startup log reports successful exit (0).
 - M0-001: compile/configuration validation PASS, PlayMode 1/1 PASS; separate gameplay unit tests N/A (no gameplay logic). TEST-M0-001 PASS. Prior preflight-only block was a corrected applicability error.
-- M0-002: Android-target compile and settings assertions PASS; PlayMode 1/1 PASS. M0-003 through M0-013 remain TODO. TEST-M0-002 (APK build) not run yet; TEST-M0-003 through TEST-M0-005/device performance remain pending with no available Quest.
+- M0-002: Android-target compile and settings assertions PASS; PlayMode 1/1 PASS. M0-004 through M0-013 remain TODO. M0-003 package import/compile and PlayMode 1/1 PASS. TEST-M0-002 (APK build) not run yet; TEST-M0-003 through TEST-M0-005/device performance remain pending with no available Quest.
 
 ## Human Feedback
 (none yet - see docs/HUMAN_FEEDBACK.md)
