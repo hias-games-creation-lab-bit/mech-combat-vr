@@ -4,15 +4,21 @@ Record of key decisions and their reasoning. AI must not reverse these without D
 
 ---
 
-## ADR-001: Unity 6.3 LTS
+## ADR-001: Unity 6.3 LTS (6000.3.25f1)
 - Date: 2026-10-02
-- Decision: Use Unity 6000.0.x LTS (not Tech Stream)
-- Reason: Meta XR SDK v207 requires 6000.0.66f2+. LTS = most stable.
+- Decision: Use exactly Unity 6.3 LTS (6000.3.25f1).
+- Reason: Keep the intended 6.3 LTS line and pin one reproducible Editor patch instead of mixing release series or selecting a moving "latest" version.
+- Release reference: https://unity.com/releases/editor/whats-new/6000.3.25f1
+- Enforcement: M0-001 creates the project with this exact Editor and records it in ProjectSettings/ProjectVersion.txt. AGENTS.md, PROJECT_STATUS.md, and README.md mirror this decision.
+- Validation: M0 must verify the chosen SDK/package combination, Android build, Vulkan launch, and runtime logs. Compatibility is not assumed from the version number. Record failures and STOP rather than silently switching Editor versions.
+- Known issue to assess in M0: Unity lists Vulkan swapchain timeout crash UUM-153744 for this release. This is a risk to validate, not a claim that the project reproduces it.
+- Change policy: Any later Editor change requires Director approval and updates to this ADR, the three reference documents, and ProjectVersion.txt.
 
 ## ADR-002: URP (not Built-in)
 - Date: 2026-10-02
-- Decision: URP with Forward rendering
-- Reason: Meta official requirement for Quest. Built-in is deprecated.
+- Decision: URP with Forward rendering only. Forward+ and Deferred are not approved.
+- Reason: Use one rendering path for the prototype so configuration, tests, and performance measurements are comparable.
+- Enforcement: M0-006 and TEST-M0-001 verify Forward on every active URP renderer/quality configuration. A change requires Director approval.
 
 ## ADR-003: OpenXR (not Oculus XR Plugin)
 - Date: 2026-10-02
@@ -26,8 +32,10 @@ Record of key decisions and their reasoning. AI must not reverse these without D
 
 ## ADR-005: 90Hz target (not 72Hz or 120Hz)
 - Date: 2026-10-02
-- Decision: Lock to 90Hz
-- Reason: 72Hz too laggy for cockpit turning. 120Hz budget too tight for solo dev.
+- Decision: Request 90Hz and require sustained application rendering at 90Hz, with application CPU and GPU frame times each < 11.1ms.
+- Reason: Use a single performance acceptance target for cockpit combat.
+- Emergency policy: Application FPS < 72 or CPU/GPU frame time > 13.9ms triggers STOP/BLOCKED. Remaining above 72 FPS does not constitute PASS.
+- Validation: TEST_PLAN.md Performance Acceptance defines measurement and classification. Do not lower refresh rate or count reprojection as a way to pass.
 
 ## ADR-006: All weapons use physics projectiles (no hitscan for player)
 - Date: 2026-10-02
@@ -39,10 +47,14 @@ Record of key decisions and their reasoning. AI must not reverse these without D
 - Decision: ScriptableObject State Machine for enemy AI
 - Reason: Simplest for Codex to generate. Behavior Trees are overkill and harder to debug.
 
-## ADR-008: Cockpit camera is 100% head-locked
+## ADR-008: Vehicle-locked cockpit with independent tracked head motion
 - Date: 2026-10-02
-- Decision: Cockpit never moves independently of player head
-- Reason: VR comfort. World moves, cockpit stays fixed.
+- Decision: The cockpit reference shell and seat anchor are fixed to the mech/vehicle, not to the tracked head or camera. The player's head moves freely within the cockpit using tracked position and rotation.
+- Hierarchy: MechRoot owns CockpitRoot and SeatAnchor; SeatAnchor owns the XR Origin and tracked camera. Neither the cockpit nor the mech is parented to the camera. Keep cockpit/tracking scale at 1:1.
+- Motion: Artificial locomotion moves/turns MechRoot. Physical head translation creates parallax against the cockpit; looking around does not rotate the cockpit. Movement-induced pitch/roll is prohibited, not tracked head pitch/roll.
+- Effects: Bob/shake may animate only designated secondary visual parts. Never apply them to the tracked camera, XR Origin, seat anchor, or cockpit reference shell. See GAME_DESIGN.md VR Comfort Limits.
+- Reason: Preserve a vehicle-relative cockpit reference while allowing natural head movement and lean parallax. Comfort still requires a human Quest 3 test.
+- Supersedes: The previous head-locked cockpit instruction. M1-003 and TEST-M1-001/002 must implement and verify this corrected model.
 
 ## ADR-009: No hand tracking (controller only)
 - Date: 2026-10-02
